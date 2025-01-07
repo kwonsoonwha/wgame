@@ -15,6 +15,8 @@ export class Unit {
     private energy: number = 0;
     private maxEnergy: number = 0;
     private isFlying: boolean = false;
+    private targetX: number | null = null;
+    private targetY: number | null = null;
 
     constructor(type: UnitType, x: number, y: number) {
         this.type = type;
@@ -67,6 +69,24 @@ export class Unit {
         if (this.maxEnergy > 0 && this.energy < this.maxEnergy) {
             this.energy += 0.1;
         }
+
+        // 목표 지점으로 이동
+        if (this.targetX !== null && this.targetY !== null) {
+            const dx = this.targetX - this.x;
+            const dy = this.targetY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > this.stats.speed) {
+                const ratio = this.stats.speed / distance;
+                this.x += dx * ratio;
+                this.y += dy * ratio;
+            } else {
+                this.x = this.targetX;
+                this.y = this.targetY;
+                this.targetX = null;
+                this.targetY = null;
+            }
+        }
     }
 
     public setTarget(unit: Unit | null): void {
@@ -92,19 +112,8 @@ export class Unit {
     }
 
     public move(x: number, y: number): void {
-        this.target = null;
-        const dx = x - this.x;
-        const dy = y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance > this.stats.speed) {
-            const ratio = this.stats.speed / distance;
-            this.x += dx * ratio;
-            this.y += dy * ratio;
-        } else {
-            this.x = x;
-            this.y = y;
-        }
+        this.targetX = x;
+        this.targetY = y;
     }
 
     public attack(target: Unit): void {
@@ -145,32 +154,22 @@ export class Unit {
     }
 
     public render(ctx: CanvasRenderingContext2D): void {
-        // 임시로 사각형으로 유닛 표시
+        // 유닛 본체 렌더링
+        ctx.fillStyle = 'blue';  // 임시 색상
         ctx.fillRect(this.x - 16, this.y - 16, 32, 32);
 
         // 체력바 렌더링
         const healthBarWidth = 32;
-        const healthBarHeight = 5;
+        const healthBarHeight = 4;
         const healthPercentage = this.health / this.maxHealth;
 
+        // 체력바 배경
         ctx.fillStyle = 'red';
-        ctx.fillRect(this.x - 16, this.y - 25, healthBarWidth, healthBarHeight);
+        ctx.fillRect(this.x - 16, this.y - 24, healthBarWidth, healthBarHeight);
+
+        // 현재 체력
         ctx.fillStyle = 'green';
-        ctx.fillRect(this.x - 16, this.y - 25, healthBarWidth * healthPercentage, healthBarHeight);
-
-        // 쉴드 바 렌더링
-        if (this.maxShields > 0) {
-            const shieldPercentage = this.shields / this.maxShields;
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(this.x - 16, this.y - 30, 32 * shieldPercentage, 3);
-        }
-
-        // 에너지 바 렌더링
-        if (this.maxEnergy > 0) {
-            const energyPercentage = this.energy / this.maxEnergy;
-            ctx.fillStyle = 'purple';
-            ctx.fillRect(this.x - 16, this.y - 33, 32 * energyPercentage, 3);
-        }
+        ctx.fillRect(this.x - 16, this.y - 24, healthBarWidth * healthPercentage, healthBarHeight);
     }
 
     public heal(amount: number): void {

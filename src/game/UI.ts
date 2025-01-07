@@ -82,7 +82,7 @@ export class UI {
         const cardWidth = 400;
         const cardHeight = 100;
         const x = (this.canvas.width - cardWidth) / 2;
-        const y = this.canvas.height - cardHeight - 10;
+        const y = this.canvas.height - cardHeight;
 
         // 배경
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -91,19 +91,25 @@ export class UI {
         // 유닛 생산 버튼
         const buttonWidth = 80;
         const buttonHeight = 80;
-        const units = [UnitType.MARINE, UnitType.ZERGLING, UnitType.ZEALOT];
-        
+        const units = [
+            { type: UnitType.MARINE, name: "마린", cost: 50 },
+            { type: UnitType.ZERGLING, name: "저글링", cost: 25 },
+            { type: UnitType.ZEALOT, name: "질럿", cost: 100 }
+        ];
+
         units.forEach((unit, index) => {
             const buttonX = x + 10 + (buttonWidth + 10) * index;
             const buttonY = y + 10;
 
+            // 버튼 배경
             this.ctx.fillStyle = 'gray';
             this.ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
-            
+
+            // 유닛 정보
             this.ctx.fillStyle = 'white';
             this.ctx.font = '12px Arial';
-            this.ctx.fillText(UnitType[unit], buttonX + 5, buttonY + 15);
-            this.ctx.fillText(`비용: ${UNIT_STATS[unit].cost}`, buttonX + 5, buttonY + 30);
+            this.ctx.fillText(unit.name, buttonX + 5, buttonY + 20);
+            this.ctx.fillText(`비용: ${unit.cost}`, buttonX + 5, buttonY + 40);
         });
     }
 } 
