@@ -3,6 +3,7 @@ import { Player } from './Player';
 import { Unit } from './Unit';
 import { Race, UnitType } from './UnitTypes';
 import { UI } from './UI';
+import { BuildingType } from './Building';
 
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -11,6 +12,8 @@ export class Game {
     private players: Player[];
     private selectedUnit: Unit | null;
     private ui: UI;
+    private buildMode: boolean;
+    private selectedBuildingType: BuildingType | null;
 
     constructor() {
         this.canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -45,6 +48,8 @@ export class Game {
         this.players[1].createUnit(UnitType.ZERGLING, 700, 500);
 
         this.selectedUnit = null;
+        this.buildMode = false;
+        this.selectedBuildingType = null;
         this.setupEventListeners();
     }
 
@@ -61,6 +66,14 @@ export class Game {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
+        // 건물 건설 모드 처리
+        if (this.buildMode) {
+            this.players[0].createBuilding(this.selectedBuildingType!, x, y);
+            this.buildMode = false;
+            this.selectedBuildingType = null;
+            return;
+        }
+
         // 커맨드 카드 영역 클릭 처리
         if (y > this.canvas.height - 110) {
             this.handleCommandCardClick(x, y);
@@ -138,6 +151,11 @@ export class Game {
         this.players.forEach((player, index) => {
             this.ctx.fillStyle = index === 0 ? 'blue' : 'red';
             player.getUnits().forEach(unit => unit.render(this.ctx));
+        });
+
+        // 건물 렌더링
+        this.players.forEach((player, index) => {
+            player.getBuildings().forEach(building => building.render(this.ctx));
         });
 
         // UI 렌더링

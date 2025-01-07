@@ -1,5 +1,6 @@
 import { Unit } from './Unit';
 import { Race, UnitType } from './UnitTypes';
+import { Building, BuildingType, BUILDING_STATS } from './Building';
 
 interface Resources {
     minerals: number;
@@ -10,6 +11,7 @@ export class Player {
     private units: Unit[];
     private race: Race;
     private resources: Resources;
+    private buildings: Building[];
 
     constructor(race: Race) {
         this.units = [];
@@ -18,6 +20,7 @@ export class Player {
             minerals: 50,
             gas: 0
         };
+        this.buildings = [];
     }
 
     public getResources(): Resources {
@@ -62,11 +65,32 @@ export class Player {
         return this.race;
     }
 
+    public createBuilding(type: BuildingType, x: number, y: number): boolean {
+        const stats = BUILDING_STATS[type];
+        if (this.canAfford(stats.mineralCost, stats.gasCost)) {
+            this.spendResources(stats.mineralCost, stats.gasCost);
+            this.buildings.push(new Building(type, x, y));
+            return true;
+        }
+        return false;
+    }
+
+    public getBuildings(): Building[] {
+        return this.buildings;
+    }
+
     public update(): void {
-        // 죽은 유닛 제거
+        // 유닛 업데이트
         this.units = this.units.filter(unit => unit.isAlive());
-        
-        // 각 유닛 업데이트
         this.units.forEach(unit => unit.update());
+
+        // 건물 업데이트
+        this.buildings = this.buildings.filter(building => building.isAlive());
+        this.buildings.forEach(building => {
+            const newUnit = building.update();
+            if (newUnit) {
+                this.units.push(newUnit);
+            }
+        });
     }
 } 

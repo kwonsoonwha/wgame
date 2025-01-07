@@ -1,4 +1,5 @@
 import { UnitType, UnitStats, UNIT_STATS } from './UnitTypes';
+import { Sprite } from './Sprite';
 
 export class Unit {
     private x: number;
@@ -100,7 +101,7 @@ export class Unit {
     }
 
     public render(ctx: CanvasRenderingContext2D): void {
-        // 유닛 렌더링
+        // 임시로 사각형으로 유닛 표시
         ctx.fillRect(this.x - 16, this.y - 16, 32, 32);
 
         // 체력바 렌더링
