@@ -7,10 +7,22 @@ export class GameMap {
         this.width = width;
         this.height = height;
         this.terrain = Array(height).fill(0).map(() => Array(width).fill(0));
+        this.generateTerrain();
+    }
+
+    public getWidth(): number {
+        return this.width;
+    }
+
+    public getHeight(): number {
+        return this.height;
+    }
+
+    public getTerrain(): number[][] {
+        return this.terrain;
     }
 
     public generateTerrain(): void {
-        // 간단한 지형 생성
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
                 this.terrain[y][x] = Math.random() > 0.8 ? 1 : 0;
