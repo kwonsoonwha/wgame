@@ -1,11 +1,26 @@
 import { Unit } from './Unit';
 import { UnitType } from './UnitTypes';
+import { Race } from './UnitTypes';
 
 export enum BuildingType {
+    // 테란 건물
     COMMAND_CENTER,
     BARRACKS,
+    FACTORY,
+    STARPORT,
+    ACADEMY,
+    
+    // 저그 건물
     HATCHERY,
-    GATEWAY
+    SPAWNING_POOL,
+    HYDRALISK_DEN,
+    SPIRE,
+    
+    // 프로토스 건물
+    NEXUS,
+    GATEWAY,
+    CYBERNETICS_CORE,
+    TEMPLAR_ARCHIVES
 }
 
 export interface BuildingStats {
@@ -14,36 +29,123 @@ export interface BuildingStats {
     mineralCost: number;
     gasCost: number;
     size: { width: number; height: number };
+    race: Race;
+    special?: string;
 }
 
 export const BUILDING_STATS: Record<BuildingType, BuildingStats> = {
+    // 테란 건물
     [BuildingType.COMMAND_CENTER]: {
         health: 1500,
-        buildTime: 100,
+        buildTime: 120,
         mineralCost: 400,
         gasCost: 0,
-        size: { width: 4, height: 3 }
+        size: { width: 4, height: 3 },
+        race: Race.TERRAN
     },
     [BuildingType.BARRACKS]: {
         health: 1000,
-        buildTime: 65,
+        buildTime: 80,
         mineralCost: 150,
         gasCost: 0,
-        size: { width: 3, height: 2 }
+        size: { width: 3, height: 2 },
+        race: Race.TERRAN
     },
+    [BuildingType.FACTORY]: {
+        health: 1250,
+        buildTime: 100,
+        mineralCost: 200,
+        gasCost: 100,
+        size: { width: 3, height: 2 },
+        race: Race.TERRAN
+    },
+    [BuildingType.STARPORT]: {
+        health: 1300,
+        buildTime: 100,
+        mineralCost: 150,
+        gasCost: 100,
+        size: { width: 3, height: 2 },
+        race: Race.TERRAN
+    },
+    [BuildingType.ACADEMY]: {
+        health: 600,
+        buildTime: 80,
+        mineralCost: 150,
+        gasCost: 0,
+        size: { width: 2, height: 2 },
+        race: Race.TERRAN
+    },
+    
+    // 저그 건물
     [BuildingType.HATCHERY]: {
         health: 1500,
-        buildTime: 100,
+        buildTime: 120,
         mineralCost: 300,
         gasCost: 0,
-        size: { width: 4, height: 3 }
+        size: { width: 4, height: 3 },
+        race: Race.ZERG
+    },
+    [BuildingType.SPAWNING_POOL]: {
+        health: 750,
+        buildTime: 65,
+        mineralCost: 200,
+        gasCost: 0,
+        size: { width: 2, height: 2 },
+        race: Race.ZERG
+    },
+    [BuildingType.HYDRALISK_DEN]: {
+        health: 850,
+        buildTime: 80,
+        mineralCost: 100,
+        gasCost: 50,
+        size: { width: 2, height: 2 },
+        race: Race.ZERG
+    },
+    [BuildingType.SPIRE]: {
+        health: 600,
+        buildTime: 120,
+        mineralCost: 200,
+        gasCost: 150,
+        size: { width: 2, height: 2 },
+        race: Race.ZERG
+    },
+    
+    // 프로토스 건물
+    [BuildingType.NEXUS]: {
+        health: 750,
+        buildTime: 120,
+        mineralCost: 400,
+        gasCost: 0,
+        size: { width: 4, height: 3 },
+        race: Race.PROTOSS,
+        special: 'shields'
     },
     [BuildingType.GATEWAY]: {
-        health: 1000,
+        health: 500,
         buildTime: 65,
         mineralCost: 150,
         gasCost: 0,
-        size: { width: 3, height: 2 }
+        size: { width: 3, height: 2 },
+        race: Race.PROTOSS,
+        special: 'shields'
+    },
+    [BuildingType.CYBERNETICS_CORE]: {
+        health: 500,
+        buildTime: 90,
+        mineralCost: 200,
+        gasCost: 0,
+        size: { width: 2, height: 2 },
+        race: Race.PROTOSS,
+        special: 'shields'
+    },
+    [BuildingType.TEMPLAR_ARCHIVES]: {
+        health: 500,
+        buildTime: 150,
+        mineralCost: 150,
+        gasCost: 200,
+        size: { width: 2, height: 2 },
+        race: Race.PROTOSS,
+        special: 'shields'
     }
 };
 

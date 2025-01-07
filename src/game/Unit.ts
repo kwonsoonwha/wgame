@@ -10,6 +10,11 @@ export class Unit {
     private stats: UnitStats;
     private target: Unit | null = null;
     private attackCooldown: number = 0;
+    private shields: number = 0;
+    private maxShields: number = 0;
+    private energy: number = 0;
+    private maxEnergy: number = 0;
+    private isFlying: boolean = false;
 
     constructor(type: UnitType, x: number, y: number) {
         this.type = type;
@@ -18,6 +23,24 @@ export class Unit {
         this.stats = UNIT_STATS[type];
         this.maxHealth = this.stats.health;
         this.health = this.maxHealth;
+
+        // 특수 능력 초기화
+        if (this.stats.special) {
+            switch (this.stats.special) {
+                case 'shields':
+                    this.maxShields = this.maxHealth / 2;
+                    this.shields = this.maxShields;
+                    break;
+                case 'psionic':
+                case 'cloak':
+                    this.maxEnergy = 200;
+                    this.energy = 50;
+                    break;
+                case 'flying':
+                    this.isFlying = true;
+                    break;
+            }
+        }
     }
 
     public update(): void {
@@ -33,6 +56,16 @@ export class Unit {
             } else {
                 this.moveToward(this.target.getPosition());
             }
+        }
+
+        // 쉴드 재생
+        if (this.maxShields > 0 && this.shields < this.maxShields) {
+            this.shields += 0.1;
+        }
+
+        // 에너지 재생
+        if (this.maxEnergy > 0 && this.energy < this.maxEnergy) {
+            this.energy += 0.1;
         }
     }
 
@@ -79,6 +112,17 @@ export class Unit {
     }
 
     public takeDamage(amount: number): void {
+        // 쉴드가 있는 경우 먼저 쉴드에 데미지
+        if (this.shields > 0) {
+            if (this.shields >= amount) {
+                this.shields -= amount;
+                return;
+            } else {
+                amount -= this.shields;
+                this.shields = 0;
+            }
+        }
+        
         this.health -= amount;
         if (this.health < 0) this.health = 0;
     }
@@ -113,5 +157,23 @@ export class Unit {
         ctx.fillRect(this.x - 16, this.y - 25, healthBarWidth, healthBarHeight);
         ctx.fillStyle = 'green';
         ctx.fillRect(this.x - 16, this.y - 25, healthBarWidth * healthPercentage, healthBarHeight);
+
+        // 쉴드 바 렌더링
+        if (this.maxShields > 0) {
+            const shieldPercentage = this.shields / this.maxShields;
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(this.x - 16, this.y - 30, 32 * shieldPercentage, 3);
+        }
+
+        // 에너지 바 렌더링
+        if (this.maxEnergy > 0) {
+            const energyPercentage = this.energy / this.maxEnergy;
+            ctx.fillStyle = 'purple';
+            ctx.fillRect(this.x - 16, this.y - 33, 32 * energyPercentage, 3);
+        }
+    }
+
+    public heal(amount: number): void {
+        this.health = Math.min(this.health + amount, this.maxHealth);
     }
 }
