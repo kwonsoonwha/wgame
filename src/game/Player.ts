@@ -1,15 +1,18 @@
 import { Unit } from './Unit';
 import { Race, UnitType } from './UnitTypes';
 import { Building, BuildingType } from './Building';
+import { Game } from './Game';
 
 export class Player {
     private resources: { minerals: number; gas: number };
     private units: Unit[];
     private buildings: Building[];
     private race: Race;
+    private game: Game;
 
-    constructor(race: Race) {
+    constructor(race: Race, game: Game) {
         this.race = race;
+        this.game = game;
         this.resources = { minerals: 1000, gas: 0 };
         this.units = [];
         this.buildings = [];
@@ -41,7 +44,7 @@ export class Player {
     }
 
     public createUnit(type: UnitType, x: number, y: number): void {
-        const newUnit = new Unit(type, x, y);
+        const newUnit = new Unit(type, x, y, this.game);
         this.units.push(newUnit);
     }
 

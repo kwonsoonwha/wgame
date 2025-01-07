@@ -1,6 +1,7 @@
 import { Unit } from './Unit';
 import { UnitType } from './UnitTypes';
 import { Race } from './UnitTypes';
+import { Game } from './Game';
 
 export enum BuildingType {
     // 테란 건물
@@ -158,11 +159,13 @@ export class Building {
     private constructionProgress: number;
     private productionQueue: UnitType[];
     private productionProgress: number;
+    private game: Game;
 
-    constructor(type: BuildingType, x: number, y: number) {
+    constructor(type: BuildingType, x: number, y: number, game: Game) {
         this.type = type;
         this.x = x;
         this.y = y;
+        this.game = game;
         this.maxHealth = BUILDING_STATS[type].health;
         this.health = this.maxHealth;
         this.constructionProgress = 0;
@@ -181,7 +184,7 @@ export class Building {
             if (this.productionProgress >= 50) { // 유닛 생산 시간
                 this.productionProgress = 0;
                 const unitType = this.productionQueue.shift()!;
-                return new Unit(unitType, this.x + 64, this.y + 64);
+                return new Unit(unitType, this.x + 64, this.y + 64, this.game);
             }
         }
 

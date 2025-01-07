@@ -16,21 +16,23 @@ export class UI {
     public renderResourceInfo(player: Player): void {
         this.ctx.fillStyle = 'white';
         this.ctx.font = '16px Arial';
-        this.ctx.fillText(`미네랄: ${player.getResources().minerals}`, 10, 20);
-        this.ctx.fillText(`가스: ${player.getResources().gas}`, 10, 40);
+        const resources = player.getResources();
+        this.ctx.fillText(`미네랄: ${resources.minerals}`, 10, 20);
+        this.ctx.fillText(`가스: ${resources.gas}`, 10, 40);
     }
 
-    public renderUnitInfo(unit: Unit | null): void {
+    public renderUnitInfo(unit: Unit): void {
         if (!unit) return;
 
         const info = unit.getInfo();
+        const stats = unit.getStats();
+
         this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(this.canvas.width - 200, 0, 200, 100);
-        this.ctx.fillStyle = 'black';
         this.ctx.font = '14px Arial';
-        this.ctx.fillText(`유닛: ${info.name}`, this.canvas.width - 190, 20);
-        this.ctx.fillText(`체력: ${info.health}/${info.maxHealth}`, this.canvas.width - 190, 40);
-        this.ctx.fillText(`공격력: ${info.damage}`, this.canvas.width - 190, 60);
+        this.ctx.fillText(`유닛: ${info}`, 10, 70);
+        this.ctx.fillText(`공격력: ${stats.damage}`, 10, 90);
+        this.ctx.fillText(`방어력: ${stats.armor}`, 10, 110);
+        this.ctx.fillText(`이동속도: ${stats.speed}`, 10, 130);
     }
 
     public renderMiniMap(map: GameMap, players: Player[]): void {
@@ -80,36 +82,32 @@ export class UI {
 
     public renderCommandCard(player: Player): void {
         const cardWidth = 400;
-        const cardHeight = 100;
-        const x = (this.canvas.width - cardWidth) / 2;
-        const y = this.canvas.height - cardHeight;
-
-        // 배경
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fillRect(x, y, cardWidth, cardHeight);
-
-        // 유닛 생산 버튼
+        const startX = (this.canvas.width - cardWidth) / 2;
         const buttonWidth = 80;
         const buttonHeight = 80;
-        const units = [
-            { type: UnitType.MARINE, name: "마린", cost: 50 },
-            { type: UnitType.ZERGLING, name: "저글링", cost: 25 },
-            { type: UnitType.ZEALOT, name: "질럿", cost: 100 }
-        ];
+        const buttonSpacing = 10;
+        const buttonY = this.canvas.height - 100;
 
-        units.forEach((unit, index) => {
-            const buttonX = x + 10 + (buttonWidth + 10) * index;
-            const buttonY = y + 10;
+        // 커맨드 카드 배경
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        this.ctx.fillRect(startX, buttonY, cardWidth, 90);
 
+        // 유닛 생산 버튼
+        const unitTypes = [UnitType.MARINE, UnitType.ZERGLING, UnitType.ZEALOT];
+        const costs = [50, 25, 100];
+
+        unitTypes.forEach((type, index) => {
+            const buttonX = startX + buttonSpacing + index * (buttonWidth + buttonSpacing);
+            
             // 버튼 배경
-            this.ctx.fillStyle = 'gray';
-            this.ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+            this.ctx.fillStyle = player.canAfford(costs[index], 0) ? 'gray' : 'darkgray';
+            this.ctx.fillRect(buttonX, buttonY + 5, buttonWidth, buttonHeight);
 
             // 유닛 정보
             this.ctx.fillStyle = 'white';
             this.ctx.font = '12px Arial';
-            this.ctx.fillText(unit.name, buttonX + 5, buttonY + 20);
-            this.ctx.fillText(`비용: ${unit.cost}`, buttonX + 5, buttonY + 40);
+            this.ctx.fillText(UnitType[type], buttonX + 5, buttonY + 20);
+            this.ctx.fillText(`비용: ${costs[index]}`, buttonX + 5, buttonY + 40);
         });
     }
 } 

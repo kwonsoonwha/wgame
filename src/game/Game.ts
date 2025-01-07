@@ -25,18 +25,19 @@ export class Game {
         this.ctx = this.canvas.getContext('2d')!;
         this.map = new GameMap(this.canvas.width, this.canvas.height);
         
-        // 플레이어 초기화
+        // 플레이어 초기화 시 this 전달
         this.players = [
-            new Player(Race.TERRAN),  // 플레이어 1
-            new Player(Race.ZERG)     // 플레이어 2 (AI)
+            new Player(Race.TERRAN, this),  // this 전달
+            new Player(Race.ZERG, this)     // this 전달
         ];
         
         this.ui = new UI(this.canvas, this.ctx);
         
-        // 이벤트 리스너 설정
-        this.setupEventListeners();
+        // 테스트용 적 유닛 생성
+        const enemyUnit = new Unit(UnitType.ZERGLING, 600, 300, this);
+        this.players[1].addUnit(enemyUnit);
         
-        // 게임 루프 시작
+        this.setupEventListeners();
         this.gameLoop();
     }
 
@@ -183,7 +184,7 @@ export class Game {
                     this.players[0].spendResources(costs[buttonIndex], 0);
                     const spawnX = 100;
                     const spawnY = Math.random() * (this.canvas.height - 200) + 100;
-                    const newUnit = new Unit(unitTypes[buttonIndex], spawnX, spawnY);
+                    const newUnit = new Unit(unitTypes[buttonIndex], spawnX, spawnY, this);
                     this.players[0].addUnit(newUnit);
                     console.log('Unit created');
                 }
@@ -208,9 +209,17 @@ export class Game {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // 이동 명령
+        // 적 유닛 클릭 확인
+        const targetUnit = this.findEnemyUnitAt(x, y);
+        
         this.selectedUnits.forEach(unit => {
-            unit.move(x, y);
+            if (targetUnit) {
+                // 공격 명령
+                unit.attack(targetUnit);
+            } else {
+                // 이동 명령
+                unit.move(x, y);
+            }
         });
     }
 
@@ -226,5 +235,26 @@ export class Game {
             }
         }
         return null;
+    }
+
+    private findEnemyUnitAt(x: number, y: number): Unit | null {
+        // 플레이어 1의 유닛은 제외하고 검색
+        for (let i = 1; i < this.players.length; i++) {
+            for (const unit of this.players[i].getUnits()) {
+                const pos = unit.getPosition();
+                if (Math.abs(pos.x - x) < 16 && Math.abs(pos.y - y) < 16) {
+                    return unit;
+                }
+            }
+        }
+        return null;
+    }
+
+    public getAllUnits(): Unit[] {
+        let allUnits: Unit[] = [];
+        this.players.forEach(player => {
+            allUnits = allUnits.concat(player.getUnits());
+        });
+        return allUnits;
     }
 }

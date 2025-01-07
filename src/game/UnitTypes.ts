@@ -25,6 +25,7 @@ export enum UnitType {
 export interface UnitStats {
     health: number;
     damage: number;
+    armor: number;
     speed: number;
     range: number;
     cost: number;
@@ -37,6 +38,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.MARINE]: {
         health: 40,
         damage: 6,
+        armor: 0,
         speed: 2.5,
         range: 4,
         cost: 50,
@@ -45,6 +47,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.FIREBAT]: {
         health: 50,
         damage: 8,
+        armor: 0,
         speed: 2.2,
         range: 2,
         cost: 75,
@@ -54,6 +57,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.GHOST]: {
         health: 45,
         damage: 10,
+        armor: 0,
         speed: 2.8,
         range: 6,
         cost: 100,
@@ -63,6 +67,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.MEDIC]: {
         health: 60,
         damage: 0,
+        armor: 0,
         speed: 2.5,
         range: 2,
         cost: 75,
@@ -74,6 +79,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.ZERGLING]: {
         health: 35,
         damage: 5,
+        armor: 0,
         speed: 3.5,
         range: 1,
         cost: 25,
@@ -82,6 +88,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.HYDRALISK]: {
         health: 80,
         damage: 10,
+        armor: 0,
         speed: 2.3,
         range: 4,
         cost: 75,
@@ -90,6 +97,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.MUTALISK]: {
         health: 120,
         damage: 9,
+        armor: 0,
         speed: 4,
         range: 3,
         cost: 100,
@@ -101,6 +109,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.ZEALOT]: {
         health: 100,
         damage: 8,
+        armor: 1,
         speed: 2.7,
         range: 1,
         cost: 100,
@@ -110,6 +119,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.DRAGOON]: {
         health: 100,
         damage: 20,
+        armor: 0,
         speed: 2.4,
         range: 4,
         cost: 125,
@@ -119,6 +129,7 @@ export const UNIT_STATS: Record<UnitType, UnitStats> = {
     [UnitType.HIGH_TEMPLAR]: {
         health: 40,
         damage: 0,
+        armor: 0,
         speed: 2,
         range: 6,
         cost: 150,
