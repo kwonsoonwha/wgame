@@ -1,0 +1,4 @@
+
+typescript 를 사용해서 스타크레프트게임을 만들거야
+프로젝트 세팅 과정을 단계별로 알려줘
+그리고 https://github.com/kwonsoonwha/wgame 여기가 내 저장소인데 여기에 소스코드 생성 또는 수정후 여기에 저장해줘
